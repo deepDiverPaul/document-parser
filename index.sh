@@ -7,6 +7,8 @@ then
     exit
 fi
 
+echo  "----- Start -----"
+
 date +%s > index.lock
 
 # Update index
