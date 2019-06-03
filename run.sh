@@ -22,15 +22,20 @@ mv /home/pi/document-vault/raw/* /home/pi/document-vault/tmp
 #     echo  " converting $i.tif"
 #     rm  $i.tif;
 # done
+echo  "----- Counting Files -----"
+num = 0
+for i in `ls /home/pi/document-vault/tmp/*.pdf | tr '\n' '\0' | xargs -0 -n 1 basename`;
+    expr $num + 1
+done
 
 # Start ocr the documents
-echo  "----- Starting OCR -----"
-echo  "----- Note: 2-5 Minutes per page! Not file -----"
-
+echo  "----- Starting OCR for $num documents -----"
+echo  "----- Note: About 1 min per page! Not file -----"
+files = 0
 for i in `ls /home/pi/document-vault/tmp/*.pdf | tr '\n' '\0' | xargs -0 -n 1 basename`;
-    do ocrmypdf -l deu /home/pi/document-vault/tmp/$i /home/pi/document-vault/handled/$i &&
-
-    echo  " OCR finish from $i"
+    expr $files + 1
+    do ocrmypdf --sidecar --optimize 1 -l deu+deu-frak /home/pi/document-vault/handled/$i.txt /home/pi/document-vault/tmp/$i /home/pi/document-vault/handled/$i &&
+    echo  "$files OCR finish for $i"
 done
 
 # Remove raw files from ocr layered files
